@@ -1,0 +1,59 @@
+CREATE TABLE sales (
+    sale_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    product_id INTEGER REFERENCES products(product_id),
+    quantity INTEGER NOT NULL,
+    unit_price NUMERIC(10, 2) NOT NULL,
+    sale_date DATE NOT NULL,
+    customer_id INTEGER REFERENCES customers(customer_id),
+    salesperson_id INTEGER REFERENCES salespersons(salesperson_id)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE customers (
+    customer_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(20),
+    preferred_product INT REFERENCES products(product_id)
+    preferred_address INT REFERENCES addresses(address_id)
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE addresses (
+    address_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    customer_id INTEGER REFERENCES customers(customer_id),
+    street_address VARCHAR(255) NOT NULL,
+    address_line_2 VARCHAR(100),
+    city VARCHAR(100) NOT NULL,
+    state_province VARCHAR(100),
+    postal_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    latitude NUMERIC(10, 6),
+    longitude NUMERIC(10, 6),
+    address_type VARCHAR(50),
+    is_primary BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE products (
+    product_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    product_name VARCHAR(50),
+    stock INTEGER NOT NULL,
+    sell_price NUMERIC (10,2) NOT NULL
+    buy_price NUMERIC (10,2) NOT NULL,
+    product_unit INTEGER REFERENCES product_units(product_unit_id),
+    sell_vat INTEGER NOT NULL CHECK (sell_vat <= 100),
+    buy_vat INTEGER NOT NULL CHECK (buy_vat <= 100),
+    is_returnable BOOLEAN NOT NULL DEFAULT FALSE,
+);
+
+//DONE
+CREATE TABLE product_units (
+    product_unit_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    product_unit_name VARCHAR(50) NOT NULL,
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+
